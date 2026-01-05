@@ -1,0 +1,190 @@
+<!DOCTYPE html><html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAPZ PANEL (Demo)</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; font-family: Arial, Helvetica, sans-serif; background: #000; color: #fff; overflow: hidden; }canvas { position: fixed; inset: 0; z-index: 0; }
+
+.panel {
+  position: relative;
+  z-index: 1;
+  max-width: 420px;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(20, 20, 30, 0.45);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.6);
+}
+
+h1 { margin-top: 0; text-align: center; font-size: 22px; }
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.06);
+  margin-bottom: 10px;
+}
+
+.item span { font-size: 14px; }
+
+.switch { position: relative; width: 52px; height: 28px; }
+.switch input { display: none; }
+.slider {
+  position: absolute; inset: 0;
+  background: #555;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: .25s;
+}
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 22px; width: 22px;
+  left: 3px; top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: .25s;
+}
+input:checked + .slider { background: #4caf50; }
+input:checked + .slider::before { transform: translateX(24px); }
+
+.footer { text-align: center; font-size: 11px; opacity: .6; margin-top: 10px; }
+.info { font-size: 12px; opacity: .8; margin-top: 12px; line-height: 1.5; }
+
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>  <div class="panel">
+    <h1>RAPZ PANEL (Demo)</h1><div class="item">
+  <span>Aim Bot</span>
+  <label class="switch">
+    <input type="checkbox" class="toggle-sound" />
+    <span class="slider"></span>
+  </label>
+</div>
+
+<div class="item">
+  <span>Aim Head 60%</span>
+  <label class="switch">
+    <input type="checkbox" class="toggle-sound" />
+    <span class="slider"></span>
+  </label>
+</div>
+
+<div class="item">
+  <span>No Recoil</span>
+  <label class="switch">
+    <input type="checkbox" class="toggle-sound" />
+    <span class="slider"></span>
+  </label>
+</div>
+
+<div class="item">
+  <span>Aim Stabilizer</span>
+  <label class="switch">
+    <input type="checkbox" class="toggle-sound" />
+    <span class="slider"></span>
+  </label>
+</div>
+
+<div class="item">
+  <span>Touch Response</span>
+  <label class="switch">
+    <input type="checkbox" class="toggle-sound" />
+    <span class="slider"></span>
+  </label>
+</div>
+
+<div class="item">
+  <span>Headrtik 80%</span>
+  <label class="switch">
+    <input type="checkbox" class="toggle-sound" />
+    <span class="slider"></span>
+  </label>
+</div>
+
+<div class="footer">© Demo UI Only</div>
+
+<div class="info">
+  Nama web     : RAPZ PANEL BETA<br>
+  Versi        : 1.0 (Release)<br>
+  Developer    : rapzz<br>
+  Brand Produk : OSAKA
+</div>
+
+  </div><audio id="click-sound" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+
+  <script>
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let w, h;
+
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // GALAXY BACKGROUND
+    let stars = [];
+    const numStars = 250;
+
+    for (let i = 0; i < numStars; i++) {
+      stars.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.5 + 1,
+        opacity: Math.random() * 0.5 + 0.5,
+        angle: Math.random() * 2 * Math.PI,
+        speed: Math.random() * 0.5 + 0.2
+      });
+    }
+
+    function draw() {
+      const gradient = ctx.createRadialGradient(w/2,h/2,0,w/2,h/2,w/2);
+      gradient.addColorStop(0,'#220022');
+      gradient.addColorStop(1,'#000');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0,0,w,h);
+
+      stars.forEach(star => {
+        ctx.beginPath();
+        ctx.moveTo(star.x, star.y);
+        const dx = Math.cos(star.angle) * 10;
+        const dy = Math.sin(star.angle) * 10;
+        ctx.lineTo(star.x + dx, star.y + dy);
+        ctx.strokeStyle = `rgba(255,0,0,${star.opacity})`;
+        ctx.lineWidth = star.r;
+        ctx.stroke();
+
+        star.x += Math.cos(star.angle) * star.speed;
+        star.y += Math.sin(star.angle) * star.speed;
+
+        if(star.x > w || star.x < 0 || star.y > h || star.y < 0){
+          star.x = Math.random() * w;
+          star.y = Math.random() * h;
+        }
+      });
+
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    // TOGGLE SOUND
+    const toggles = document.querySelectorAll('.toggle-sound');
+    const sound = document.getElementById('click-sound');
+    toggles.forEach(toggle => {
+      toggle.addEventListener('change', () => {
+        sound.currentTime = 0;
+        sound.play();
+      });
+    });
+  </script></body>
+</html>
